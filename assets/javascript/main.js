@@ -1,5 +1,5 @@
 
-let animals = ["Esctasy Cat", "Stoned Dog", "Family-Orientated Meerkat", "Drunk Elephant", "High Lemur"];
+let heros = ["T-800", "John McClane", "James Bond", "Rambo", "Snake Plissken"];
 
 //Global Functions==============================================================================
 
@@ -10,28 +10,44 @@ renderButtons();
 $("#add-gif").on("click", function(event) {
     event.preventDefault();
     
-    let animal = $("#gif-input").val().trim();
-    animals.push(animal);
+    let hero = $("#gif-input").val().trim();
+    heros.push(hero);
 
     renderButtons();
 })
 
-//Button Click
-$(document).on("click", ".gif-btn", displayGif);
+
+//
 
 //FUNCTIONS=====================================================================================
-function displayGif() {
+$("button").on("click", function() {
 
-    let animal = $(this).attr("data-name");
-    let queryURL = "" + animal + "";
+    let hero = $(this).attr("data-name");
+    let queryURL = "https://api.giphy.com/v1/gifs/search?limit=10&api_key=yDvV03g17sVGq7N7CrJ0YBfZhjrGSj2T&q=" + hero;
 
     $.ajax({
         url: queryURL,
         method: "GET"
     }).then(function(response) {
+        console.log(queryURL);
+        console.log(response)
 
+        results = response.data
+
+        for (let i=0; i < results.length; i++) {
+            let heroDiv = $("<div class = 'gifs'>");
+            // let p = $("<p>").text("Rating: " + results[i].rating);
+            
+            let heroImage = $("<img>");
+            heroImage.attr("src", results[i].images.fixed_height.url);
+
+            // heroDiv.append(p);
+            heroDiv.append(heroImage);
+            $("#gifs-view").append(heroDiv);
+
+        }
     })
-}
+});
 
 function renderButtons() {
     
@@ -39,11 +55,11 @@ function renderButtons() {
     $("#buttons-view").empty();
 
     // LOOP \ Button Generator
-    for (let i=0 ; i < animals.length; i ++) {
+    for (let i=0 ; i < heros.length; i ++) {
         let a = $("<button>");
-        a.addClass("animal-btn");
-        a.attr("data-name", animals[i]);
-        a.text(animals[i]);
+        a.addClass("gif-btn");
+        a.attr("data-name", heros[i]);
+        a.text(heros[i]);
         $("#buttons-view").append(a);
     }
 }
